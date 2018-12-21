@@ -70,14 +70,22 @@ def printFollowedStreamsThatAreLive(args):
     printStreamTableAndSaveQuicklist(stream_list)
 
 
-def printFollowedDotA2StreamsThatAreLive(args):
+def printFollowedStreamsThatAreLiveForGame(args):
+    game_name = str(args[0])
+    # TODO: this should be configurable
+    games = {}
+    games["dota2"] = 29595
+    games["fortnite"] = 33214
+    game_id = games[game_name]
+
     acc_id = api.getTwitchAccIdForAccName(config_data["client_id"], config_data["account_name"])
     stream_list = api.getFollowedStreamsThatAreLive(config_data["client_id"], acc_id=acc_id)
 
     temp_list = stream_list[:]
     for s in temp_list:
-        if not s.isStreamingD2():
+        if not int(s.getGameID()) == game_id:
             stream_list.remove(s)
+
 
     # sort by viewer count
     stream_list.sort(key=lambda x: x.getViewerCount(), reverse=True)
@@ -223,7 +231,7 @@ def printHelp(args):
     print("    -s, --sloppy")
     print("    -l, --list")
     print("    -f, --following")
-    print("    -fd,--following (D2 only)")
+    print("    -fg, --followedgame")
     print("    -w, --watch")
     print("    -ql,--quicklist")
     print("    -q, --quality")
@@ -242,7 +250,7 @@ if __name__ == "__main__":
     commands.append(Command(["-s", "--sloppy"], printFittingStreams))
     commands.append(Command(["-l", "--list"], printTopDotA2LiveStreams))
     commands.append(Command(["-f", "--following"], printFollowedStreamsThatAreLive))
-    commands.append(Command(["-fd"], printFollowedDotA2StreamsThatAreLive))
+    commands.append(Command(["-fg", "--followedgame"], printFollowedStreamsThatAreLiveForGame))
     commands.append(Command(["-w", "--watch"], watchStream))
     commands.append(Command(["-ql", "--quicklist"], showQuickList))
     commands.append(Command(["-q", "--quality"], setStreamQuality))

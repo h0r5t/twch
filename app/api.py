@@ -46,6 +46,9 @@ class Stream:
     def isStreamingD2(self):
         return int(self.getGameID()) == 29595
 
+    def isStreamingFN(self):
+        return int(self.getGameID()) == 33214
+
 
 def makeApiRequest(api_url, headers, variables=None, mult_var=None):
     full_url = api_url
